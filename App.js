@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Platform} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 export default class App extends React.Component {
@@ -22,16 +22,30 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    NetInfo.addEventListener(connectionInfo => {
+    // subscribe
+    this.unsubscribe = NetInfo.addEventListener(connectionInfo => {
       // console.log('\nconnectionInfo: ', connectionInfo);
 
-      if (connectionInfo.isConnected) {
-        this.setState({isConnected: true});
-      } else {
-        this.setState({isConnected: false});
-        this.setState({syncStatus: 'Pending'});
+      if (Platform.OS === 'android'){
+        if (connectionInfo.isWifiEnabled) {
+          this.setState({isConnected: true});
+        } else {
+          this.setState({isConnected: false});
+          this.setState({syncStatus: 'Pending'});
+        }
+      } else { // ios
+        if (connectionInfo.isConnected) {
+          this.setState({isConnected: true});
+        } else {
+          this.setState({isConnected: false});
+          this.setState({syncStatus: 'Pending'});
+        }
       }
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   submitData(requestBody) {
