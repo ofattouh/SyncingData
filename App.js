@@ -32,6 +32,7 @@ export default class App extends React.Component {
         } else {
           this.setState({isConnected: false});
           this.setState({syncStatus: 'Pending'});
+          this.setState({serverResponse: null});
         }
       } else { // ios
         if (connectionInfo.isConnected) {
@@ -39,6 +40,7 @@ export default class App extends React.Component {
         } else {
           this.setState({isConnected: false});
           this.setState({syncStatus: 'Pending'});
+          this.setState({serverResponse: null});
         }
       }
     });
